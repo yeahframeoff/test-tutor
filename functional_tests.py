@@ -23,8 +23,7 @@ class NewVisitorTest(unittest.TestCase):
         self.assertIn('To-Do', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('To-Do', header_text)
-
-
+        
         # invitation to enter a to-do item straight away
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertEqual(
@@ -54,7 +53,7 @@ class NewVisitorTest(unittest.TestCase):
         # user wonders, whether the site will remember his list.
         # then he notices that the site has generated a unique url for him 
         # -- there is some explanatory text to that effect
-        self.fail('Finish test!');
+        self.fail('Finish the test!');
 
         # user visits that url - his to-do list is still there
 
