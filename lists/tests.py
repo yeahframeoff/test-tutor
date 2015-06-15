@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.http import HttpRequest
 
 from lists.views import home_page
+from lists.models import Item
 
 
 class HomePageTest(TestCase):
@@ -32,3 +33,23 @@ class HomePageTest(TestCase):
             {'new_item_text': 'A new list item'}
         )
         self.assertEqual(response.content.decode(), expected_html)
+
+
+class ItemModelTest(TestCase):
+    def test_saving_and_retrieving_items(self):
+        item1 = Item()
+        item1.text = 'The first (ever) list item'
+        item1.save()
+
+        item2 = Item()
+        item2.text = 'Item the second'
+        item2.save()
+
+        saved_items = Item.objects.all()
+        self.assertEqual(saved_items.count(), 2)
+
+        saved_item1 = saved_items[0]
+        saved_item2 = saved_items[1]
+
+        self.assertEqual(saved_item1.text, 'The first (ever) list item')
+        self.assertEqual(saved_item2.text, 'Item the second')
