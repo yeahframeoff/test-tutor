@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.http import HttpRequest
 
 from lists.views import home_page
-from lists.models import Item
+from lists.models import Item, List
 
 
 class HomePageTest(TestCase):
@@ -20,15 +20,22 @@ class HomePageTest(TestCase):
         self.assertEqual(response.content.decode(), expected_html)
 
 
-class ItemModelTest(TestCase):
+class ListAndItemModelTest(TestCase):
     def test_saving_and_retrieving_items(self):
+        the_list = List()
+        the_list.save()
         item1 = Item()
         item1.text = 'The first (ever) list item'
+        item1.list = the_list
         item1.save()
 
         item2 = Item()
         item2.text = 'Item the second'
+        item2.list = the_list
         item2.save()
+
+        saved_list = List.objects.first()
+        self.assertEqual(saved_list, the_list)
 
         saved_items = Item.objects.all()
         self.assertEqual(saved_items.count(), 2)
@@ -37,13 +44,16 @@ class ItemModelTest(TestCase):
         saved_item2 = saved_items[1]
 
         self.assertEqual(saved_item1.text, 'The first (ever) list item')
+        self.assertEqual(saved_item1.list, the_list)
         self.assertEqual(saved_item2.text, 'Item the second')
+        self.assertEqual(saved_item2.list, the_list)
 
 
 class ListViewTest(TestCase):
     def test_display_all_items(self):
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
+        de_list = List.objects.create()
+        Item.objects.create(text='itemey 1', list=de_list)
+        Item.objects.create(text='itemey 2', list=de_list)
 
         response = self.client.get('/lists/the-only-list-in-the-world/')
         self.assertContains(response, 'itemey 1')
